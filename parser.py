@@ -9,7 +9,7 @@ URL = "https://kakoysegodnyaprazdnik.ru/"
 
 async def get_holidays() -> list[str]:
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False) 
+        browser = await p.chromium.launch(channel='chrome', headless=False) 
         page = await browser.new_page()
 
         await page.goto(URL, wait_until="domcontentloaded")
