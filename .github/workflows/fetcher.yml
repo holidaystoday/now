@@ -1,0 +1,39 @@
+name: Fetch and Commit Daily Holidays
+
+on:
+  schedule:
+    - cron: '1 21 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch_holidays:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install selectolax patchright playwright
+
+      - name: Install Playwright browsers
+        run: |
+          playwright install chromium
+
+      - name: Run parser.py to fetch holidays
+        run: python parser.py
+
+      - name: Check for changes and commit holidays.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          file_pattern: 'holidays.json'
+          commit_message: 'Today holidays updated!'
+          commit_author: Higher intelligence idk.
