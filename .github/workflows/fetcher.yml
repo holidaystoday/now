@@ -36,4 +36,4 @@ jobs:
         with:
           file_pattern: 'holidays.json'
           commit_message: 'Today holidays updated!'
-          commit_author: Higher intelligence idk.
+          commit_author: Just Me <just@mock.com>
