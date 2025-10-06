@@ -5,7 +5,7 @@ import json
 from selectolax.parser import HTMLParser
 from patchright.async_api import async_playwright
 
-URL = "https://kakoysegodnyaprazdnik.ru/"
+URL = "https://kakoysegodnyaprazdnik.ru/zavtra"
 
 async def get_holidays() -> list[str]:
     async with async_playwright() as p:
