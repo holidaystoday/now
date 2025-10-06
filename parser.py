@@ -19,14 +19,14 @@ async def get_holidays() -> list[str]:
             if btn:
                 await btn.click()
                 try:
-                    await page.wait_for_selector(".listing_wr", timeout=5000)
+                    await page.wait_for_selector(".listing_wr", timeout=60000)
                 except Exception:
                     await asyncio.sleep(1)
         except Exception:
             pass
 
         try:
-            await page.wait_for_load_state("networkidle", timeout=3000)
+            await page.wait_for_load_state("networkidle", timeout=60000)
         except Exception:
             pass
 
