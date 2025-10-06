@@ -18,10 +18,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set timezone to Kazakhstan (UTC+5)
-        shell: powershell
-        run: Set-TimeZone -Id "Central Asia Standard Time"
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
