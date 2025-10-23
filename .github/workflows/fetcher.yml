@@ -28,7 +28,7 @@ jobs:
           pip install selectolax patchright playwright
       
       - name: Install Google Chrome
-        run: choco install googlechrome --no-progress -y
+        run: choco install googlechrome --no-progress -y --ignore-checksums
 
       - name: Run parser.py to fetch holidays
         run: python parser.py
