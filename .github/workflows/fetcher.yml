@@ -50,11 +50,13 @@ jobs:
           $isValid = $false
           
           if (Test-Path "holidays.json") {
-            $fileSize = (Get-Item "holidays.json").Length
             $content = Get-Content "holidays.json" -Raw -ErrorAction SilentlyContinue
             
-            if ($fileSize -gt 10 -and $content -and $content.Trim().Length -gt 0) {
-              $isValid = $true
+            if ($content) {
+              $json = $content | ConvertFrom-Json -ErrorAction SilentlyContinue
+              if ($json -and $json.holidays -and $json.holidays.Count -gt 0) {
+                $isValid = $true
+              }
             }
           }
           
