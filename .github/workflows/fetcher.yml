@@ -63,7 +63,6 @@ jobs:
           if (-not $isValid) {
             if ($retryCount -lt $maxRetries) {
               $newRetryCount = $retryCount + 1
-              Start-Sleep -Seconds 60
               gh workflow run fetcher.yml --ref $env:GITHUB_REF_NAME --field retry_count=$newRetryCount
               exit 1
             } else {
