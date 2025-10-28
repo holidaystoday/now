@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '1 21 * * *'
   workflow_dispatch:
+    inputs:
+      retry_count:
+        description: 'Retry attempt number'
+        required: false
+        default: '0'
 
 jobs:
   fetch_holidays:
@@ -11,6 +16,7 @@ jobs:
     
     permissions:
       contents: write
+      actions: write
     
     steps:
       - name: Checkout repository
@@ -33,7 +39,38 @@ jobs:
       - name: Run parser.py to fetch holidays
         run: python parser.py
 
+      - name: Validate holidays.json and retry if needed
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RETRY_COUNT: ${{ github.event.inputs.retry_count || '0' }}
+        run: |
+          $retryCount = [int]$env:RETRY_COUNT
+          $maxRetries = 5
+          $isValid = $false
+          
+          if (Test-Path "holidays.json") {
+            $fileSize = (Get-Item "holidays.json").Length
+            $content = Get-Content "holidays.json" -Raw -ErrorAction SilentlyContinue
+            
+            if ($fileSize -gt 10 -and $content -and $content.Trim().Length -gt 0) {
+              $isValid = $true
+            }
+          }
+          
+          if (-not $isValid) {
+            if ($retryCount -lt $maxRetries) {
+              $newRetryCount = $retryCount + 1
+              Start-Sleep -Seconds 60
+              gh workflow run fetcher.yml --ref $env:GITHUB_REF_NAME --field retry_count=$newRetryCount
+              exit 1
+            } else {
+              exit 1
+            }
+          }
+
       - name: Check for changes and commit holidays.json
+        if: success()
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: 'holidays.json'
